@@ -1,0 +1,14 @@
+{
+    "name": "vitaly-alexandrovich/modeler",
+    "authors": [
+        {
+            "name": "Vitaly",
+            "email": "personal.vitaly@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modeler\\": "src/"
+        }
+    }
+}
