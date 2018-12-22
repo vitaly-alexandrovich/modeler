@@ -1,6 +1,9 @@
 <?php
 namespace Modeler\Properties;
 
+use Modeler\Exceptions\NotNullException;
+use Modeler\Property;
+
 class RelationProperty extends BaseProperty
 {
     protected $relationClass;

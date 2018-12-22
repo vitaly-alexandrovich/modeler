@@ -1,6 +1,9 @@
 <?php
 namespace Modeler\Properties;
 
+use Modeler\Property;
+use Modeler\Exceptions\NotNullException;
+
 class StringProperty extends BaseProperty
 {
     public function __construct()
