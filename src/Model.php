@@ -31,6 +31,7 @@ class Model
         $model = new static();
 
         foreach (static::mapProperties() as $propertyName => $propertyType) {
+            /** @var BaseProperty $propertyType */
             if (!isset($attributes[$propertyName])) {
                 $attributes[$propertyName] = null;
             }
@@ -90,7 +91,7 @@ class Model
      * @param string $attributeName
      * @return bool
      */
-    private function hasAttribute(string $attributeName)
+    public function hasAttribute(string $attributeName)
     {
         return isset($this->attributes[$attributeName]);
     }
@@ -148,7 +149,13 @@ class Model
      */
     public function toArray()
     {
-        return $this->attributes;
+        $result = [];
+
+        foreach ($this->attributes as $attributeName => $attributeValue) {
+            $result[$attributeName] = ($attributeValue instanceof Model) ? $attributeValue->toArray() : $attributeValue;
+        }
+
+        return $result;
     }
 
     /**

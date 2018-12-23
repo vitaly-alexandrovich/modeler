@@ -70,9 +70,7 @@ class BaseProperty
     public function prepareValue($value)
     {
         if (is_null($value)) {
-            if (!is_null($this->getDefaultValue())) {
-                $value = $this->getDefaultValue();
-            }
+            $value = $this->getDefaultValue();
         }
 
         if (is_null($value) && !$this->isAvailableNull()) {

@@ -28,6 +28,12 @@ class StringProperty extends BaseProperty
      */
     public function prepareValue($value)
     {
-        return strval(parent::prepareValue($value));
+        $value = parent::prepareValue($value);
+
+        if (is_null($value)) {
+            return null;
+        }
+
+        return strval($value);
     }
 }

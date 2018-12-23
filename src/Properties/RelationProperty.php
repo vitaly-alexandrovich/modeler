@@ -35,6 +35,12 @@ class RelationProperty extends BaseProperty
      */
     public function prepareValue($value)
     {
-        return call_user_func([$this->relationClass, 'fromArray'], parent::prepareValue($value));
+        $value = parent::prepareValue($value);
+
+        if (is_null($value)) {
+            $value = [];
+        }
+
+        return call_user_func([$this->relationClass, 'fromArray'], $value);
     }
 }

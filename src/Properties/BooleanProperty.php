@@ -28,6 +28,17 @@ class BooleanProperty extends BaseProperty
      */
     public function prepareValue($value)
     {
-        return boolval(parent::prepareValue($value));
+        $value = parent::prepareValue($value);
+
+        if (is_null($value)) {
+            return null;
+        }
+
+        switch (strtolower($value)) {
+            case 'true': return true;
+            case 'false': return false;
+        }
+
+        return boolval($value);
     }
 }

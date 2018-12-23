@@ -28,6 +28,12 @@ class IntegerProperty extends BaseProperty
      */
     public function prepareValue($value)
     {
-        return intval(parent::prepareValue($value));
+        $value = parent::prepareValue($value);
+
+        if (is_null($value)) {
+            return null;
+        }
+
+        return intval($value);
     }
 }
