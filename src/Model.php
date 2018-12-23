@@ -93,7 +93,7 @@ class Model
      */
     public function hasAttribute(string $attributeName)
     {
-        return isset($this->attributes[$attributeName]);
+        return array_key_exists($attributeName, $this->attributes);
     }
 
     /**
