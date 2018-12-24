@@ -113,6 +113,7 @@ class Model
     /**
      * @param string $attributeName
      * @param null $value
+     * @return mixed|null
      * @throws NotNullException
      * @throws NotSpecifiedAttributeException
      */
@@ -125,7 +126,7 @@ class Model
             throw new NotSpecifiedAttributeException("Attribute ${attributeName} is not specified in mapProperties method");
         }
 
-        $this->attributes[$attributeName] = !is_null($attributeType)
+        return $this->attributes[$attributeName] = !is_null($attributeType)
             ? static::castValue($value, $attributeType)
             : $value;
     }
@@ -176,7 +177,7 @@ class Model
             switch ($action) {
                 case('has'): return $this->hasAttribute($attributeName);
                 case('get'): return $this->getAttribute($attributeName, null);
-                case('set'): return $this->getAttribute($attributeName, null);
+                case('set'): return $this->setAttribute($attributeName, null);
             }
         }
 
