@@ -14,6 +14,25 @@ class Model
 
     protected $attributes = [];
 
+    public function __construct()
+    {
+        // Заполняем недостающие поля согласно заданным для них правилам
+        foreach (static::mapProperties() as $propertyName => $propertyType) {
+            /** @var BaseProperty $propertyType */
+            $value = null;
+
+            if ($propertyType->hasDefaultValue()) {
+                $value = $propertyType->getDefaultValue();
+            }
+
+            try {
+                $this->attributes[$propertyName] = $propertyType->prepareValue($value);
+            } catch (NotNullException $e) {
+                continue;
+            }
+        }
+    }
+
     /**
      * @return array
      */
@@ -30,18 +49,12 @@ class Model
     {
         $model = new static();
 
-        foreach (static::mapProperties() as $propertyName => $propertyType) {
-            /** @var BaseProperty $propertyType */
-            if (!isset($attributes[$propertyName])) {
-                $attributes[$propertyName] = null;
-            }
-
+        foreach ($attributes as $attributeName => $attributeValue) {
             try {
-                $model->setAttribute($propertyName, static::castValue($attributes[$propertyName], $propertyType));
-            } catch (NotNullException $e) {
+                $model->setAttribute($attributeName, $attributeValue);
+            } catch (NotNullException $exception) {
                 continue;
             }
-
         }
 
         return $model;
@@ -59,7 +72,7 @@ class Model
     /**
      * @param $value
      * @param $type
-     * @return bool|float|int|string
+     * @return mixed
      * @throws NotNullException
      */
     protected static function castValue($value, $type) 
@@ -69,12 +82,33 @@ class Model
     }
 
     /**
+     * @param $attributeName
+     * @return mixed|null
+     */
+    protected function getAttributeType($attributeName)
+    {
+        $properties = static::mapProperties();
+
+        if (isset($properties[$attributeName])) {
+            return $properties[$attributeName];
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $attributeName
      * @param null $value
+     * @throws NotNullException
      */
     public function setAttribute(string $attributeName, $value = null)
     {
-        $this->attributes[strtolower($attributeName)] = $value;
+        $attributeName = strtolower($attributeName);
+        $attributeType = $this->getAttributeType($attributeName);
+
+        $this->attributes[$attributeName] = !is_null($attributeType)
+            ? static::castValue($value, $attributeType)
+            : $value;
     }
 
     /**

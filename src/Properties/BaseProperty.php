@@ -53,6 +53,14 @@ class BaseProperty
     }
 
     /**
+     * @return mixed
+     */
+    public function hasDefaultValue()
+    {
+        return !is_null($this->defaultValue);
+    }
+
+    /**
      * @param mixed $defaultValue
      * @return static
      */

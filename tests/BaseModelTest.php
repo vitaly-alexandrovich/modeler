@@ -158,9 +158,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testHasAttribute($data, $attribute, $result)
     {
         $model = NestedModel::fromArray($data);
-
-        var_dump($model->toArray(), $attribute, isset($model->toArray()[$attribute]), $result);
-
         $this->assertEquals($model->hasAttribute($attribute), $result);
     }
 
