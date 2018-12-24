@@ -1,6 +1,7 @@
 <?php
 namespace Modeler;
 
+use BadMethodCallException;
 use Modeler\Exceptions\NotNullException;
 use Modeler\Exceptions\NotSpecifiedAttributeException;
 use Modeler\Properties\BaseProperty;
@@ -181,7 +182,7 @@ class Model
             }
         }
 
-        throw new \Exception("Unknown method ${$methodName}");
+        throw new BadMethodCallException("Instance method Model->${methodName}() doesn't exist");
     }
 
     /**
