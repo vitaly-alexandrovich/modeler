@@ -4,6 +4,7 @@ namespace Modeler;
 use Modeler\Properties\BooleanProperty;
 use Modeler\Properties\FloatProperty;
 use Modeler\Properties\IntegerProperty;
+use Modeler\Properties\RawProperty;
 use Modeler\Properties\RelationProperty;
 use Modeler\Properties\StringProperty;
 
@@ -14,6 +15,15 @@ class Property
     const FLOAT = 'float';
     const BOOLEAN = 'boolean';
     const RELATION = 'relation';
+    const RAW = 'raw';
+
+    /**
+     * @return RawProperty
+     */
+    public static function raw()
+    {
+        return new RawProperty();
+    }
 
     /**
      * @return StringProperty
