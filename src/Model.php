@@ -2,6 +2,7 @@
 namespace Modeler;
 
 use Modeler\Exceptions\NotNullException;
+use Modeler\Exceptions\NotSpecifiedAttributeException;
 use Modeler\Properties\BaseProperty;
 
 class Model
@@ -12,8 +13,19 @@ class Model
     const PROPERTY_FLOAT = 'integer';
     const PROPERTY_BOOLEAN = 'boolean';
 
+    /**
+     * @var array
+     */
     protected $attributes = [];
 
+    /**
+     * @var bool
+     */
+    protected static $availableNotSpecifiedAttributes = true;
+
+    /**
+     * Model constructor.
+     */
     public function __construct()
     {
         // Заполняем недостающие поля согласно заданным для них правилам
@@ -53,6 +65,8 @@ class Model
             try {
                 $model->setAttribute($attributeName, $attributeValue);
             } catch (NotNullException $exception) {
+                continue;
+            } catch (NotSpecifiedAttributeException $exception) {
                 continue;
             }
         }
@@ -100,11 +114,16 @@ class Model
      * @param string $attributeName
      * @param null $value
      * @throws NotNullException
+     * @throws NotSpecifiedAttributeException
      */
     public function setAttribute(string $attributeName, $value = null)
     {
         $attributeName = strtolower($attributeName);
         $attributeType = $this->getAttributeType($attributeName);
+
+        if (is_null($attributeType) and static::$availableNotSpecifiedAttributes === false) {
+            throw new NotSpecifiedAttributeException("Attribute ${attributeName} is not specified in mapProperties method");
+        }
 
         $this->attributes[$attributeName] = !is_null($attributeType)
             ? static::castValue($value, $attributeType)
