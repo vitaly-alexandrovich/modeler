@@ -20,6 +20,11 @@ class Model
     protected $attributes = [];
 
     /**
+     * @var array
+     */
+    protected $mapPropertiesClosure = null;
+
+    /**
      * @var bool
      */
     protected static $availableNotSpecifiedAttributes = true;
@@ -29,8 +34,12 @@ class Model
      */
     public function __construct()
     {
+        if (!is_callable($this->mapPropertiesClosure)) {
+            $this->mapPropertiesClosure = [$this, 'mapProperties'];
+        }
+
         // Заполняем недостающие поля согласно заданным для них правилам
-        foreach (static::mapProperties() as $propertyName => $propertyType) {
+        foreach (($this->mapPropertiesClosure)() as $propertyName => $propertyType) {
             /** @var BaseProperty $propertyType */
             $value = null;
 
@@ -102,7 +111,7 @@ class Model
      */
     protected function getAttributeType($attributeName)
     {
-        $properties = static::mapProperties();
+        $properties = ($this->mapPropertiesClosure)();
 
         if (isset($properties[$attributeName])) {
             return $properties[$attributeName];
@@ -121,6 +130,8 @@ class Model
     public function setAttribute(string $attributeName, $value = null)
     {
         $attributeName = strtolower($attributeName);
+
+        /** @var BaseProperty $attributeType */
         $attributeType = $this->getAttributeType($attributeName);
 
         if (is_null($attributeType) and static::$availableNotSpecifiedAttributes === false) {
