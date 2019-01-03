@@ -47,6 +47,8 @@ class Model
                 $value = $propertyType->getDefaultValue();
             }
 
+            $propertyName = str_replace([' '], ['_'], $propertyName);
+
             try {
                 $this->attributes[$propertyName] = $propertyType->prepareValue($value);
             } catch (NotNullException $e) {
@@ -129,7 +131,7 @@ class Model
      */
     public function setAttribute(string $attributeName, $value = null)
     {
-        $attributeName = strtolower($attributeName);
+        $attributeName = str_replace([' '], ['_'], strtolower($attributeName));
 
         /** @var BaseProperty $attributeType */
         $attributeType = $this->getAttributeType($attributeName);
@@ -179,7 +181,7 @@ class Model
         list($methodName, $action, $attribute) = $matches;
 
         $camelCaseAttribute = self::camelCaseToUnderscore($attribute);
-        $attribute = strtolower($attribute);
+        $attribute = lcfirst($attribute);
 
         foreach([$attribute, $camelCaseAttribute] as $attributeName) {
             if ($attributeName === $attribute && !$this->hasAttribute($attributeName)) {

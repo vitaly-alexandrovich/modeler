@@ -91,6 +91,9 @@ class ModelTest extends TestCase
         return [
             [[], 'test', false],
             [['test'], 'test', false],
+            [['camelCaseTest' => 'test'], 'camelCaseTest', true],
+            [['underscore_test' => 'test'], 'underscore_test', true],
+            [['underscore_andCamelCase_test' => 'test'], 'underscore_andCamelCase_test', true],
             [['test' => 'test'], 'test', true],
             [['test' => null], 'test', true],
             [['test' => false], 'test', true],
@@ -208,6 +211,21 @@ class ModelTest extends TestCase
                 'same'
             ],
             [
+                ['space test' => Property::string()],
+                ['space_test' => null],
+                'same'
+            ],
+            [
+                ['underscore_test' => Property::string()],
+                ['underscore_test' => null],
+                'same'
+            ],
+            [
+                ['camelCaseTest' => Property::string()],
+                ['camelCaseTest' => null],
+                'same'
+            ],
+            [
                 ['foo' => Property::string()->defaultValue('bar')],
                 ['foo' => 'bar'],
                 'same'
@@ -303,6 +321,48 @@ class ModelTest extends TestCase
             [
                 ['foo' => 'bar'],
                 ['foo' => 'bar']
+            ],
+        ];
+    }
+
+    /**
+     * @param $attributes
+     * @param $methodName
+     * @param $result
+     * @throws ReflectionException
+     * @throws Exception
+     * @dataProvider provider__call_for_getters
+     */
+    public function test__call_for_getters($attributes, $methodName, $result)
+    {
+        $model = new Model();
+        $attributesProperty = new ReflectionProperty($model, 'attributes');
+        $attributesProperty->setAccessible(true);
+        $attributesProperty->setValue($model, $attributes);
+
+        $this->assertEquals($model->__call($methodName), $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function provider__call_for_getters()
+    {
+        return [
+            [
+                ['foo' => 'bar'],
+                'getFoo',
+                'bar'
+            ],
+            [
+                ['underscore_test' => 'bar'],
+                'getUnderscoreTest',
+                'bar'
+            ],
+            [
+                ['camelCaseTest' => 'bar'],
+                'getCamelCaseTest',
+                'bar'
             ],
         ];
     }
