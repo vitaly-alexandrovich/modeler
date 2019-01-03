@@ -131,7 +131,7 @@ class Model
      */
     public function setAttribute(string $attributeName, $value = null)
     {
-        $attributeName = str_replace([' '], ['_'], strtolower($attributeName));
+        $attributeName = str_replace([' '], ['_'], $attributeName);
 
         /** @var BaseProperty $attributeType */
         $attributeType = $this->getAttributeType($attributeName);
